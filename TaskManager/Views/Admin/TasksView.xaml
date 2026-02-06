@@ -1,0 +1,208 @@
+﻿<UserControl x:Class="TaskManager.Views.Admin.TasksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+      
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button Grid.Column="0"
+                    Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                    Command="{Binding LoadCommand}">
+                        <materialDesign:PackIcon Kind="Refresh" Width="18" Height="18" Margin="0,0,6,0"/>
+            </Button>
+
+            <Button Grid.Column="1"
+                    Content="Создать"
+                    Width="120"
+                    Height="32"
+                    Margin="8,0,0,0"
+                    FontSize="15"
+                    Command="{Binding Form.ShowCommand}"/>
+
+            <TextBox Grid.Column="2"
+                     Width="260"
+                     Height="32"
+                     HorizontalAlignment="Right"
+                     Margin="12,0,0,0"
+                     materialDesign:HintAssist.Hint="Поиск (Заголовок, описание, исполнитель)"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        <TextBlock Grid.Row="6"
+                   Grid.ColumnSpan="2"
+                   Text="{Binding ErrorText}"
+                   Foreground="DarkRed"/>
+
+        <Border Grid.Row="2"
+                BorderBrush="#DDD"
+                BorderThickness="1"
+                Padding="8"
+                CornerRadius="4">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Form.IsVisible}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <DockPanel>
+                <TextBlock Text="{Binding Form.Title}"
+                           DockPanel.Dock="Top"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="240"/>
+                        <ColumnDefinition Width="24"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="240"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Text="Название"
+                               VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             materialDesign:HintAssist.Hint="Название"
+                             Text="{Binding Form.TitleTask, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="3"
+                               Text="Исполнитель"
+                               VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="0" Grid.Column="4"
+                              ItemsSource="{Binding Form.Executors}"
+                              SelectedItem="{Binding Form.SelectedExecutor}"
+                              materialDesign:HintAssist.Hint="Исполнитель"
+                              DisplayMemberPath="Login"/>
+
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="0"
+                               Text="Описание"
+                               VerticalAlignment="Top"/>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Grid.ColumnSpan="4"
+                             Height="120"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             materialDesign:HintAssist.Hint="Описание"
+                             Text="{Binding Form.Description, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                    <TextBlock Grid.Row="4" Grid.Column="3"
+                               Text="Статус"
+                               VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="4" Grid.Column="4"
+                              materialDesign:HintAssist.Hint="Статус"
+                              ItemsSource="{Binding Form.Statuses}"
+                              SelectedItem="{Binding Form.Status}"/>
+
+                    <StackPanel Grid.Row="6" Grid.ColumnSpan="5"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                Foreground="ForestGreen"
+                                Command="{Binding Form.SaveCommand}">
+                            <materialDesign:PackIcon Kind="ContentSave" Width="20" Height="20"/>
+                        </Button>
+
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                Foreground="DarkRed"
+                                Command="{Binding Form.CancelCommand}">
+                            <materialDesign:PackIcon Kind="CloseCircle" Width="20" Height="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </Border>
+
+        <DataGrid Grid.Row="4"
+                  Margin="0,10,0,0"
+                  ItemsSource="{Binding FilteredTasks}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название"
+                                    Width="*"
+                                    MinWidth="80"
+                                    Binding="{Binding Title}"/>
+                <DataGridTextColumn Header="Статус задачи"
+                                    Width="Auto"
+                                    MaxWidth="140"
+                                    Binding="{Binding Status}"/>
+                <DataGridTextColumn Header="Автор"
+                                    Width="Auto"
+                                    MaxWidth="80"
+                                    Binding="{Binding AuthorLogin}"/>
+                <DataGridTextColumn Header="Исполнитель"
+                                    Width="Auto"
+                                    MaxWidth="140"
+                                    Binding="{Binding ExecutorLogin}"/>
+                <DataGridTextColumn Header="Дата создания"
+                                    Width="Auto"
+                                    MaxWidth="180"
+                                    Binding="{Binding CreateDate}"/>
+
+                <DataGridTemplateColumn Header="Изменить" Width="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Grid.Row="5" 
+                                    Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Foreground="Gray">
+                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Удалить" Width="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Grid.Row="5"
+                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Foreground="DarkRed">
+                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

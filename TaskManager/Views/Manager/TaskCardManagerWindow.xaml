@@ -1,0 +1,110 @@
+﻿<Window x:Class="TaskManager.Views.Manager.TaskCardManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Задача"
+        Width="650" Height="520"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="6"
+           Grid.ColumnSpan="2"
+           Text="{Binding ErrorText}"
+           Foreground="DarkRed"/>
+
+        <TextBox Grid.Row="0"
+                 Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                 FontSize="18"
+                 materialDesign:HintAssist.Hint="Заголовок"
+                 Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="Статус: "
+                       VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="0"
+                      Grid.Column="1"
+                      ItemsSource="{Binding Statuses}"
+                      SelectedItem="{Binding SelectedStatus}"
+					  materialDesign:HintAssist.Hint="Статус"/>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="3"
+                       Text="Исполнитель: "
+                       VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="0"
+                      Grid.Column="4"
+                      ItemsSource="{Binding Executors}"
+                      SelectedItem="{Binding SelectedExecutor}"
+                      DisplayMemberPath="Login"
+					  materialDesign:HintAssist.Hint="Исполнитель"/>
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Text="Создано: "
+                       VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="2"
+                       Grid.Column="1"
+                       Text="{Binding CreateDate}"
+                       VerticalAlignment="Center"/>
+        </Grid>
+
+        <Border Grid.Row="4"
+                BorderBrush="#DDD"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10">
+            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     materialDesign:HintAssist.Hint="Описание"/>
+        </Border>
+
+        <DockPanel Grid.Row="6" LastChildFill="False">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button Grid.Row="5"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        HorizontalAlignment="Right"
+                        Foreground="ForestGreen"
+                        Command="{Binding SaveCommand}">
+                     <materialDesign:PackIcon Kind="ContentSave" Width="20" Height="20"/>
+                </Button>
+
+                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Foreground="DarkRed"
+                        Command="{Binding CancelCommand}">
+                    <materialDesign:PackIcon Kind="CloseCircle" Width="20" Height="20"/>
+                </Button>
+
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
